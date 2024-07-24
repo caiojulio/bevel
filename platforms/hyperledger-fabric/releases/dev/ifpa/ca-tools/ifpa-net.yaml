@@ -1,0 +1,85 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: ifpa-net-ca-tools
+  namespace: ifpa-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  interval: 1m
+  releaseName: ifpa-net-ca-tools
+  chart:
+    spec:
+      interval: 1m
+      sourceRef:
+        kind: GitRepository
+        name: flux-local
+        namespace: flux-local
+      chart: platforms/hyperledger-fabric/charts/fabric-catools
+  values:
+    metadata:
+      namespace: ifpa-net
+      name: ca-tools
+      component_type: peer
+      org_name: ifpa
+      proxy: none
+    annotations:  
+      service:
+        - example1: example2
+      pvc:
+      deployment:
+    replicaCount: 1
+
+    image:
+      alpineutils: ghcr.io/hyperledger/bevel-alpine:latest
+      catools: ghcr.io/hyperledger/bevel-fabric-ca-tools:1.2.1
+      pullPolicy: IfNotPresent
+    
+    storage:
+      storageclassname: ifpa-bevel-storageclass
+      storagesize: 512Mi
+    
+    vault:
+      role: vault-role
+      address: http://10.126.1.99:8200
+      authpath: localifpa
+      secretusers: secretsv2/data/ifpa/peerOrganizations/ifpa-net/users
+      secretorderer: secretsv2/data/ifpa/peerOrganizations/ifpa-net/orderers
+      secretpeer: secretsv2/data/ifpa/peerOrganizations/ifpa-net/peers
+      secretpeerorderertls: secretsv2/data/ifpa/peerOrganizations/ifpa-net/orderer/tls
+      secretcert: secretsv2/data/ifpa/peerOrganizations/ifpa-net/ca?ca.ifpa-net-cert.pem
+      secretkey: secretsv2/data/ifpa/peerOrganizations/ifpa-net/ca?ifpa-net-CA.key
+      secretcouchdb: secretsv2/data/ifpa/credentials/ifpa-net/couchdb/ifpa
+      secretconfigfile: secretsv2/data/ifpa/peerOrganizations/ifpa-net/msp/config
+      serviceaccountname: vault-auth
+      type: hashicorp
+      imagesecretname: ""
+    
+    healthcheck: 
+      retries: 10
+      sleepTimeAfterError: 2
+
+    
+    org_data:
+      external_url_suffix: develop.local.com
+      component_subject: O=Ifpa,OU=Ifpa,L=40.73/-74/New York,C=US
+      cert_subject: O=Ifpa/OU=Ifpa/L=40.73,-74,New York/C=US
+      component_country: US
+      component_state: New York
+      component_location: New York
+      ca_url: ca.ifpa-net:7054
+
+    orderers:
+      name: 
+    orderers_info:
+
+    peers:
+      name: peer0,-      
+    peer_count: "1"
+    users: 
+      users_list: "W3sndXNlcic6IE5vbmUsICdpZGVudGl0eSc6ICd1c2VyMScsICdhdHRyaWJ1dGVzJzogW3sna2V5JzogJ2hmLlJldm9rZXInLCAndmFsdWUnOiAndHJ1ZSd9XX1d"
+      users_identities: user1-
+    checks:
+      refresh_cert_value: False
+      refresh_user_cert_value: False
+      add_peer_value: False
