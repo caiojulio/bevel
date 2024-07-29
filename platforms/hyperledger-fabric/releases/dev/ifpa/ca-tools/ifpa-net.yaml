@@ -62,16 +62,18 @@ spec:
     
     org_data:
       external_url_suffix: develop.local.com
-      component_subject: O=Ifpa,OU=Ifpa,L=40.73/-74/New York,C=US
-      cert_subject: O=Ifpa/OU=Ifpa/L=40.73,-74,New York/C=US
-      component_country: US
-      component_state: New York
-      component_location: New York
+      component_subject: O=Ifpa,OU=Ifpa,L=51.50/-0.13/London,C=GB
+      cert_subject: O=Ifpa/OU=Ifpa/L=51.50,-0.13,London/C=GB
+      component_country: GB
+      component_state: London
+      component_location: London
       ca_url: ca.ifpa-net:7054
 
     orderers:
-      name: 
+      name: orderer1-
     orderers_info:
+      - name: orderer1
+        path: "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUI4ekNDQVppZ0F3SUJBZ0lVSlRrQnkzWk1aUkhjZ0VvTGdrbmRkV2FFbmdnd0NnWUlLb1pJemowRUF3SXcKVnpFTE1Ba0dBMVVFQmhNQ1IwSXhEekFOQmdOVkJBZ01Ca3h2Ym1SdmJqRVBNQTBHQTFVRUJ3d0dURzl1Wkc5dQpNUkF3RGdZRFZRUUtEQWRQY21SbGNtVnlNUlF3RWdZRFZRUUREQXRqWVM1MVpuQmhMVzVsZERBZUZ3MHlOREEzCk1qa3hPVEU0TVRsYUZ3MHlOekExTVRreE9URTRNVGxhTUZjeEN6QUpCZ05WQkFZVEFrZENNUTh3RFFZRFZRUUkKREFaTWIyNWtiMjR4RHpBTkJnTlZCQWNNQmt4dmJtUnZiakVRTUE0R0ExVUVDZ3dIVDNKa1pYSmxjakVVTUJJRwpBMVVFQXd3TFkyRXVkV1p3WVMxdVpYUXdXVEFUQmdjcWhrak9QUUlCQmdncWhrak9QUU1CQndOQ0FBUm95MURpCkw3WEh6dDVKYlJBQ1YwSVZ5d0QrNVdEaUZjNnp5eDRWWjB3Vys1L2hRWW5pNlJ3UnFWNUVMa0xzRU9Tbi9JeDgKclhRSzU4YzJXd0NCRHh0b28wSXdRREFQQmdOVkhSTUJBZjhFQlRBREFRSC9NQTRHQTFVZER3RUIvd1FFQXdJQgpwakFkQmdOVkhRNEVGZ1FVd2wxS2U5SnBJR1F0L3E0bHp3ZUJNR1Z6M0JRd0NnWUlLb1pJemowRUF3SURTUUF3ClJnSWhBS084QjkvNFJLYlNVd3NkQ3JmRTZvN0hHSXJCbHJXOVcxYTVieHQ2bDl1UkFpRUFvelhkT0NCU2I4V1MKdUVJWEVyTWtrc0tzZWk0NW1QMTBYb3QySUlGVlUzZz0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQ=="
 
     peers:
       name: peer0,-      
