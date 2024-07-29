@@ -1,0 +1,58 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: gercom-net-ca
+  namespace: gercom-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  interval: 1m
+  releaseName: gercom-net-ca
+  chart:
+    spec:
+      interval: 1m
+      sourceRef:
+        kind: GitRepository
+        name: flux-local
+        namespace: flux-local
+      chart: platforms/hyperledger-fabric/charts/fabric-ca-server  
+  values:
+    metadata:
+      namespace: gercom-net
+      images:
+        alpineutils: ghcr.io/hyperledger/bevel-alpine:latest
+        ca: ghcr.io/hyperledger/bevel-fabric-ca:1.4.8
+    deployment:
+      annotations:
+    annotations:  
+      service:
+        - example1: example2
+      pvc:
+ 
+    server:
+      name: ca
+      tlsstatus: true
+      admin: gercom-admin 
+  
+    storage:
+      storageclassname: gercom-bevel-storageclass
+      storagesize: 512Mi
+    vault:
+      role: vault-role
+      address: http://10.126.1.99:8200
+      authpath: localgercom
+      secretcert: secretsv2/data/gercom/peerOrganizations/gercom-net/ca?ca.gercom-net-cert.pem
+      secretkey: secretsv2/data/gercom/peerOrganizations/gercom-net/ca?gercom-net-CA.key
+      secretadminpass: secretsv2/data/gercom/credentials/gercom-net/ca/gercom?user
+      serviceaccountname: vault-auth
+      type: hashicorp
+      imagesecretname: ""
+    service:
+      servicetype: ClusterIP
+      ports:
+        tcp:
+          clusteripport: 7054
+    proxy:
+      provider: none
+      type: peer
+      external_url_suffix: develop.local.com
