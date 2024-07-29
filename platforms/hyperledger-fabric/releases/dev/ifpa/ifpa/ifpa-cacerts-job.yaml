@@ -34,4 +34,4 @@ spec:
       imagesecretname: ""
       
     ca:
-      subject: /C=US/ST=New York/L=New York/O=Ifpa/CN=ca.ifpa-net
+      subject: /C=GB/ST=London/L=London/O=Ifpa/CN=ca.ifpa-net
