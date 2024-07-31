@@ -1,0 +1,87 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: ufpi-net-ca-tools
+  namespace: ufpi-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  interval: 1m
+  releaseName: ufpi-net-ca-tools
+  chart:
+    spec:
+      interval: 1m
+      sourceRef:
+        kind: GitRepository
+        name: flux-local
+        namespace: flux-local
+      chart: platforms/hyperledger-fabric/charts/fabric-catools
+  values:
+    metadata:
+      namespace: ufpi-net
+      name: ca-tools
+      component_type: peer
+      org_name: ufpi
+      proxy: none
+    annotations:  
+      service:
+        - example1: example2
+      pvc:
+      deployment:
+    replicaCount: 1
+
+    image:
+      alpineutils: ghcr.io/hyperledger/bevel-alpine:latest
+      catools: ghcr.io/hyperledger/bevel-fabric-ca-tools:1.2.1
+      pullPolicy: IfNotPresent
+    
+    storage:
+      storageclassname: ufpi-bevel-storageclass
+      storagesize: 512Mi
+    
+    vault:
+      role: vault-role
+      address: http://10.126.1.99:8200
+      authpath: localufpi
+      secretusers: secretsv2/data/ufpi/peerOrganizations/ufpi-net/users
+      secretorderer: secretsv2/data/ufpi/peerOrganizations/ufpi-net/orderers
+      secretpeer: secretsv2/data/ufpi/peerOrganizations/ufpi-net/peers
+      secretpeerorderertls: secretsv2/data/ufpi/peerOrganizations/ufpi-net/orderer/tls
+      secretcert: secretsv2/data/ufpi/peerOrganizations/ufpi-net/ca?ca.ufpi-net-cert.pem
+      secretkey: secretsv2/data/ufpi/peerOrganizations/ufpi-net/ca?ufpi-net-CA.key
+      secretcouchdb: secretsv2/data/ufpi/credentials/ufpi-net/couchdb/ufpi
+      secretconfigfile: secretsv2/data/ufpi/peerOrganizations/ufpi-net/msp/config
+      serviceaccountname: vault-auth
+      type: hashicorp
+      imagesecretname: ""
+    
+    healthcheck: 
+      retries: 10
+      sleepTimeAfterError: 2
+
+    
+    org_data:
+      external_url_suffix: develop.local.com
+      component_subject: O=Ufpi,OU=Ufpi,L=47.38/8.54/Zurich,C=CH
+      cert_subject: O=Ufpi/OU=Ufpi/L=47.38,8.54,Zurich/C=CH
+      component_country: CH
+      component_state: Zurich
+      component_location: Zurich
+      ca_url: ca.ufpi-net:7054
+
+    orderers:
+      name: orderer1-
+    orderers_info:
+      - name: orderer1
+        path: "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUI4VENDQVppZ0F3SUJBZ0lVWWFLcFZvTEE2NkNEcFY0aFAra2tlYk5SamFFd0NnWUlLb1pJemowRUF3SXcKVnpFTE1Ba0dBMVVFQmhNQ1IwSXhEekFOQmdOVkJBZ01Ca3h2Ym1SdmJqRVBNQTBHQTFVRUJ3d0dURzl1Wkc5dQpNUkF3RGdZRFZRUUtEQWRQY21SbGNtVnlNUlF3RWdZRFZRUUREQXRqWVM1MVpuQmhMVzVsZERBZUZ3MHlOREEzCk16RXhPVE00TURoYUZ3MHlOekExTWpFeE9UTTRNRGhhTUZjeEN6QUpCZ05WQkFZVEFrZENNUTh3RFFZRFZRUUkKREFaTWIyNWtiMjR4RHpBTkJnTlZCQWNNQmt4dmJtUnZiakVRTUE0R0ExVUVDZ3dIVDNKa1pYSmxjakVVTUJJRwpBMVVFQXd3TFkyRXVkV1p3WVMxdVpYUXdXVEFUQmdjcWhrak9QUUlCQmdncWhrak9QUU1CQndOQ0FBU0s3eDBkCmt0NXlGRjZGSURkeGNsOUc5U0l0eS9FaXhWbHUweEk4OURpOG5oNjJSeVdZU3Y4T0RkOWQ3VUFLa3JSNzNpa0cKbCs0ZDJiYyt5Wk9pWE9ERG8wSXdRREFQQmdOVkhSTUJBZjhFQlRBREFRSC9NQTRHQTFVZER3RUIvd1FFQXdJQgpwakFkQmdOVkhRNEVGZ1FVQXU4ZTVLYmtTNjM0OWxRUzRMUytDZE44UDljd0NnWUlLb1pJemowRUF3SURSd0F3ClJBSWdHQnJ2dlUrblloVGVuRk9IbE8rRnN1Ri8xWExXL3E2a2UzT1hyeE1jckNNQ0lGbGdROWNHc01lV1VlVXAKQ3hpRDkwRERyaW9ESjJtUmRNUG5wQXZmZU9YMgotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0t"
+
+    peers:
+      name: peer0,-      
+    peer_count: "1"
+    users: 
+      users_list: "W3sndXNlcic6IE5vbmUsICdpZGVudGl0eSc6ICd1c2VyMScsICdhdHRyaWJ1dGVzJzogW3sna2V5JzogJ2hmLlJldm9rZXInLCAndmFsdWUnOiAndHJ1ZSd9XX1d"
+      users_identities: user1-
+    checks:
+      refresh_cert_value: False
+      refresh_user_cert_value: False
+      add_peer_value: False
