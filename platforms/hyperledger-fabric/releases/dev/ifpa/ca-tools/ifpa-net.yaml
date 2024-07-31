@@ -1,0 +1,87 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: ifpa-net-ca-tools
+  namespace: ifpa-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  interval: 1m
+  releaseName: ifpa-net-ca-tools
+  chart:
+    spec:
+      interval: 1m
+      sourceRef:
+        kind: GitRepository
+        name: flux-local
+        namespace: flux-local
+      chart: platforms/hyperledger-fabric/charts/fabric-catools
+  values:
+    metadata:
+      namespace: ifpa-net
+      name: ca-tools
+      component_type: peer
+      org_name: ifpa
+      proxy: none
+    annotations:  
+      service:
+        - example1: example2
+      pvc:
+      deployment:
+    replicaCount: 1
+
+    image:
+      alpineutils: ghcr.io/hyperledger/bevel-alpine:latest
+      catools: ghcr.io/hyperledger/bevel-fabric-ca-tools:1.2.1
+      pullPolicy: IfNotPresent
+    
+    storage:
+      storageclassname: ifpa-bevel-storageclass
+      storagesize: 512Mi
+    
+    vault:
+      role: vault-role
+      address: http://10.126.1.99:8200
+      authpath: localifpa
+      secretusers: secretsv2/data/ifpa/peerOrganizations/ifpa-net/users
+      secretorderer: secretsv2/data/ifpa/peerOrganizations/ifpa-net/orderers
+      secretpeer: secretsv2/data/ifpa/peerOrganizations/ifpa-net/peers
+      secretpeerorderertls: secretsv2/data/ifpa/peerOrganizations/ifpa-net/orderer/tls
+      secretcert: secretsv2/data/ifpa/peerOrganizations/ifpa-net/ca?ca.ifpa-net-cert.pem
+      secretkey: secretsv2/data/ifpa/peerOrganizations/ifpa-net/ca?ifpa-net-CA.key
+      secretcouchdb: secretsv2/data/ifpa/credentials/ifpa-net/couchdb/ifpa
+      secretconfigfile: secretsv2/data/ifpa/peerOrganizations/ifpa-net/msp/config
+      serviceaccountname: vault-auth
+      type: hashicorp
+      imagesecretname: ""
+    
+    healthcheck: 
+      retries: 10
+      sleepTimeAfterError: 2
+
+    
+    org_data:
+      external_url_suffix: develop.local.com
+      component_subject: O=Ifpa,OU=Ifpa,L=51.50/-0.13/London,C=GB
+      cert_subject: O=Ifpa/OU=Ifpa/L=51.50,-0.13,London/C=GB
+      component_country: GB
+      component_state: London
+      component_location: London
+      ca_url: ca.ifpa-net:7054
+
+    orderers:
+      name: orderer1-
+    orderers_info:
+      - name: orderer1
+        path: "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUI4akNDQVppZ0F3SUJBZ0lVSTZnaU1KdHhyL1dUMnBjcHViL2U3V0t5YU5Fd0NnWUlLb1pJemowRUF3SXcKVnpFTE1Ba0dBMVVFQmhNQ1IwSXhEekFOQmdOVkJBZ01Ca3h2Ym1SdmJqRVBNQTBHQTFVRUJ3d0dURzl1Wkc5dQpNUkF3RGdZRFZRUUtEQWRQY21SbGNtVnlNUlF3RWdZRFZRUUREQXRqWVM1MVpuQmhMVzVsZERBZUZ3MHlOREEzCk16RXhPREEyTXpoYUZ3MHlOekExTWpFeE9EQTJNemhhTUZjeEN6QUpCZ05WQkFZVEFrZENNUTh3RFFZRFZRUUkKREFaTWIyNWtiMjR4RHpBTkJnTlZCQWNNQmt4dmJtUnZiakVRTUE0R0ExVUVDZ3dIVDNKa1pYSmxjakVVTUJJRwpBMVVFQXd3TFkyRXVkV1p3WVMxdVpYUXdXVEFUQmdjcWhrak9QUUlCQmdncWhrak9QUU1CQndOQ0FBVEcvWXBuCmlxakVQNTNYdGkvalBTWVdDTEhBN1hla3hoVUJ6WjZ2WjBPN3FtNWRHbWtXZXZjWGZzMEJEMTlFK29uOFdLTE4KQ3FaVmh1VjBTeXdOeGV6dW8wSXdRREFQQmdOVkhSTUJBZjhFQlRBREFRSC9NQTRHQTFVZER3RUIvd1FFQXdJQgpwakFkQmdOVkhRNEVGZ1FVZitoMWdRTWc2bUY4QmhnZ3JmaVF5ZWd0OWRRd0NnWUlLb1pJemowRUF3SURTQUF3ClJRSWdQakNwR1hQcDI0Z0pLUEZNWDdRdDhKekc3YWFvQzlkQ0Vja0YzMkNRVU5nQ0lRREVMRGE0SDBmbDdkSTkKaWF1UVFXMjR3YlFPK2pDRnFTTjFUZFB1YTlTRE5RPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQ=="
+
+    peers:
+      name: peer0,-      
+    peer_count: "1"
+    users: 
+      users_list: "W3sndXNlcic6IE5vbmUsICdpZGVudGl0eSc6ICd1c2VyMScsICdhdHRyaWJ1dGVzJzogW3sna2V5JzogJ2hmLlJldm9rZXInLCAndmFsdWUnOiAndHJ1ZSd9XX1d"
+      users_identities: user1-
+    checks:
+      refresh_cert_value: False
+      refresh_user_cert_value: False
+      add_peer_value: False
