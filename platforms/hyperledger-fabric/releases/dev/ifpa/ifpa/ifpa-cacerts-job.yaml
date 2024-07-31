@@ -1,0 +1,37 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: ifpa-cacerts-job
+  namespace: ifpa-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  interval: 1m
+  releaseName: ifpa-cacerts-job
+  chart:
+    spec:
+      interval: 1m
+      sourceRef:
+        kind: GitRepository
+        name: flux-local
+        namespace: flux-local
+      chart: platforms/hyperledger-fabric/charts/fabric-cacerts-gen
+  values:
+    metadata:
+      name: ifpa
+      component_name: ifpa-net
+      namespace: ifpa-net    
+      images:
+       alpineutils: ghcr.io/hyperledger/bevel-alpine:latest
+    vault:
+      role: vault-role
+      address: http://10.126.1.99:8200
+      authpath: localifpa
+      secretcryptoprefix: secretsv2/data/ifpa/peerOrganizations/ifpa-net/ca
+      secretcredentialsprefix: secretsv2/data/ifpa/credentials/ifpa-net/ca/ifpa
+      serviceaccountname: vault-auth
+      type: hashicorp
+      imagesecretname: ""
+      
+    ca:
+      subject: /C=GB/ST=London/L=London/O=Ifpa/CN=ca.ifpa-net
