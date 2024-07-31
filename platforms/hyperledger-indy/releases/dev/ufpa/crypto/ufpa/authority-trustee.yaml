@@ -23,7 +23,7 @@ spec:
       name: bevel
     image:
       name: ufpa
-      repository: index.docker.io/hyperledgerlabs/bevel-indy-key-mgmt:1.12.6
+      repository: ghrc.io/hyperledger/bevel-indy-key-mgmt:1.12.6
       pullSecret: regcred
       pullPolicy: IfNotPresent
     vault:
